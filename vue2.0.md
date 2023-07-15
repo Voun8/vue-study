@@ -2239,3 +2239,2523 @@ new Vue({
 
 # 组件化编程
 
+## 模块与组件、模块化与组件化
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643034111142-590bfdbc-e993-4f4f-9a75-110cba2f890d.png)
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643034111832-4a659e2d-4a13-4944-a153-ab038b65cbf0.png)
+
+模块
+	a.理解：向外提供特定功能的 js 程序，一般就是一个 js 文件
+	b.为什么：js 文件很多很复杂
+	c.作用：复用、简化 js 的编写，提高 js 运行效率
+组件
+	a.定义：用来实现局部功能的代码和资源的集合（html/css/js/image…）
+	b.为什么：一个界面的功能很复杂
+	c.作用：复用编码，简化项目编码，提高运行效率
+模块化
+	当应用中的 js 都以模块来编写的，那这个应用就是一个模块化的应用
+组件化
+	当应用中的功能都是多组件的方式来编写的，那这个应用就是一个组件化的应用
+
+## 非单文件组件
+
+非单文件组件：一个文件中包含有n个组件
+
+单文件组件：一个文件中只包含1个组件
+
+### 基本使用
+
+三大步骤
+
+1.定义组件
+
+- 使用Vue.extend(options)创建，其中options和new Vue(options)时传入的options 几乎一样，但也有点区别
+  - el不写，因为最终所有的组件都要经过一个vm的管理，由vm中的el才绝对服务哪个容器
+  - data必须写成函数，避免组件被复用时，数据存在引用关系
+
+2.注册组件
+
+1. 局部注册：new Vue() 时options 传入components 选项
+2. 全局注册：Vue.component(‘组件名’, 组件)
+
+3.使用组件
+
+​	编写组件标签 如：<school></school>
+
+~~~html
+    <title>基本使用</title>
+</head>
+
+<body>
+    <div id="root">
+        <h2>{{msg}}</h2>
+        <hr>
+        <!-- 第三步：编写组件标签 -->
+        <school></school>
+        <hr>
+        <student></student>
+        <hr>
+        <hello></hello>
+        <hr>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        // 第一步创建组件
+        const school = Vue.extend({
+            // el:'#root'    //组件定义时，一定不要写el
+            // 因为最终所有的组件都要被一个vm管理，由vm决定服务于哪个容器
+            template: `
+                <div class="demo">
+                    <h3>学校名称：{{schoolName}}</h3>
+                    <h3>学校地址：{{address}}</h3>
+                    <button @click="showName">点我提示学校名</button>	
+                </div>
+            `,
+            data() {
+                return {
+                    schoolName: 'sgg',
+                    address: '河南'
+                }
+            },
+            methods: {
+                showName() {
+                    alert(this.schoolName)
+                }
+            }
+        })
+        // 第一步创建student组件
+        const student = Vue.extend({
+            template: `
+                <div>
+					<h3>学生姓名：{{studentName}}</h3>
+					<h3>学生年龄：{{age}}</h3>
+  			    </div>
+            `,
+            data() {
+                return {
+                    studentName: 'lyy',
+                    age: 20
+                }
+            }
+        })
+        // 第一步，创建hello组件
+        const hello = Vue.extend({
+            template: `
+				<div>	
+					<h3>你好啊！{{name}}</h3>
+  			</div>
+			`,
+            data() {
+                return {
+                    name: 'cess'
+                }
+            }
+        })
+        // 第二步，注册全局组件
+        Vue.component('hello', hello)
+        Vue.config.productionTip = false
+        new Vue({
+            el: '#root',
+            data: {
+                msg: '你好啊！'
+            },
+            //第二步注册局部组件
+            components: {
+                school,
+                student
+            }
+        })
+    </script>
+~~~
+
+![image-20230715113527003](../AppData/Roaming/Typora/typora-user-images/image-20230715113527003.png)
+
+### 组件注意事项
+
+关于组件名
+
+- 一个单词组成
+  - 第一种写法首字母小写 school
+  - 第二种写法 首字母大写 School
+- 多个单词组成
+  - 第一种写法kekab-case命名 my-school
+  - 第二章写法CamelCase命名 MySchool
+
+- 备注
+  - 组件名尽可能回避HTML种已经存在的元素名称,例如h2 H2都i不行
+  - 可以使用name配置项指定组件在开发者工具种呈现的名字
+
+关于组件标签
+
+- 第一种写法:<school></school>
+- 第二种写法:<school/>
+- 备注:不使用脚手架时,<school/>会导致后续组件不能渲染
+
+一个简写方式 
+
+> const school = Vue.extend(options) 可以简写为 const school = options 
+> 因为父组件components引入的时候会自动创建
+
+~~~html
+<title>几个注意点</title>
+</head>
+
+<body>
+    <div id="root">
+        <h2>{{msg}}</h2>
+        <school></school>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+        const school = Vue.extend({
+            name: 'atguigu', // 组件给自己起个名字，用于在浏览器开发工具上显示
+            template: `
+				<div>
+					<h3>学校名称：{{name}}</h3>	
+					<h3>学校地址：{{address}}</h3>	
+				</div>
+			`,
+            data() {
+                return {
+                    name: 'zzgyyyjsxy',
+                    address: 'hn'
+                }
+            }
+        })
+        Vue.config.productionTip = false
+        new Vue({
+            el: '#root',
+            data: {
+                msg: '你好啊！'
+            },
+            components: {
+                school
+            }
+        })
+    </script>
+~~~
+
+![image-20230715114402031](../AppData/Roaming/Typora/typora-user-images/image-20230715114402031.png)
+
+### 组件的嵌套
+
+![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643034109512-1a1a9c24-a474-4022-83b6-b6a16216151a.png?x-oss-process=image%2Fresize%2Cw_1125%2Climit_0)
+
+~~~html
+    <title>组件的嵌套</title>
+</head>
+
+<body>
+    <div id="root">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+
+        Vue.config.productionTip = false
+        //定义student组件
+        const student = Vue.extend({
+            name: 'student',
+            template: `
+				<div>
+					<h4>学生姓名：{{name}}</h4>	
+					<h4>学生年龄：{{age}}</h4>	
+  			</div>
+			`,
+            data() { return { name: '尚硅谷', age: 18 } }
+        })
+
+        //定义school组件
+        const school = Vue.extend({
+            name: 'school',
+            template: `
+				<div>
+					<h3>学校名称：{{name}}</h3>	
+					<h3>学校地址：{{address}}</h3>	
+					<student></student>
+ 			  </div>
+			`,
+            data() { return { name: '尚硅谷', address: '北京' } },
+            //注册组件（局部）
+            components: { student }
+        })
+
+        //定义hello组件
+        const hello = Vue.extend({
+            template: `<h3>{{msg}}</h3>`,
+            data() { return { msg: '欢迎来到尚硅谷学习！' } }
+        })
+
+        //定义app组件
+        const app = Vue.extend({
+            template: `
+				<div>	
+					<hello></hello>
+					<school></school>
+  			</div>
+			`,
+            components: { school, hello }
+        })
+
+        new Vue({
+            el: '#root',
+            template: `
+            <app></app>
+            `,
+            data: {
+                msg: '你好啊！'
+            },
+            components: { app }
+        })
+    </script>
+~~~
+
+![image-20230715115035148](assets/image-20230715115035148.png)
+
+
+
+### VueComponent
+
+关于VueComponent
+
+- ==school==组件本质是一个名为VueComponent的构造函数,且不是程序员定义的,而是Vue.extend()生成的
+
+- 我们只需要写<school></school>或<school/> , Vue解析时会帮我们创建school组件的实例对象,即Vue帮我们执行的new VueComponent(options)
+
+- 每次调用Vue.extend()返回的都是一个全新的VueComponent,即不同组件是不同的对象
+
+- 关于this指向
+
+  - 组件配置中的data函数methods中的函数watch中的函数 computed中的函数 
+
+    它们的this均是VueComponent实例对象
+
+  - new Vue(options)配置中:data函数methods中的函数watch中的函数 computed中的函数 
+
+    它们的this均是Vue实例对象
+
+- VueComponent的实例对象,以后简称vc(组件实例对象)   Vue的实例对象,以后简称vm
+
+~~~html
+    <title>VueComponent</title>
+</head>
+
+<body>
+    <div id="root">
+        <school></school>
+        <hello></hello>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script>
+
+        Vue.config.productionTip = false
+        const school = Vue.extend({
+            name: 'school',
+            template: `
+				<div>
+					<h2>学校名称：{{name}}</h2>	
+					<h2>学校地址：{{address}}</h2>	
+					<button @click="showName">点我提示学校名</button>
+  			</div>
+			`,
+            data() { return { name: '尚硅谷', address: '北京' } },
+            methods: { showName() { console.log('showName', this) } },
+        })
+
+        const test = Vue.extend({
+            template: `<span>atguigu</span>`
+        })
+
+        // 定义hello组件
+        const hello = Vue.extend({
+            template: `
+				<div>
+					<h2>{{msg}}</h2>
+					<test></test>	
+  			</div>
+			`,
+            data() { return { msg: '你好啊！' } },
+            components: { test }
+        })
+
+        new Vue({
+            el: '#root',
+            components: { school, hello }
+        })
+    </script>
+~~~
+
+
+
+![image-20230715120026623](assets/image-20230715120026623.png)
+
+### 一个重要的内置关系
+
+![image.png](assets/1643034116880-0c7ffd4b-f0ed-47b2-9638-3bb71344c4f1.png)
+
+1. 一个重要的内置关系:VueComponent.prototype.__ proto __===Vue.prototyoe
+2. 为什么要有这个关系,让组件实例对象vc可以访问到Vue原型上的属性和方法
+
+## 单文件组件
+
+- School.vue
+
+~~~vue
+<template>
+	<div id="demo">
+    <h2>学校名称:{{name}}</h2>
+    <h2>学校地址:{{address}}</h2>
+    <button @click="showName">点我提示学校名字</button>
+  </div>
+</template>
+<script>
+	export derfault{
+    name:'School',
+    data(){
+      return {
+        name:"sgg",
+        address:"hn"
+      },
+    methods:{
+      showName(){
+        alert(this.name)
+      }
+    }
+    }
+  }
+</script>
+<style>
+  #demo{
+    background:orange;
+  }
+</style>
+~~~
+
+- Student.vue
+
+~~~vue
+<template>
+	<div>
+    <h2>学生姓名:{{name}}</h2>
+    <h2>学生年龄:{{age}}</h2>
+  </div>
+</template>
+
+<script>
+	export default{
+    name:'Student',
+    data(){
+      return {
+        name:'lyy',
+        age:20
+      }
+    }
+  }
+</script>
+~~~
+
+- App.vue
+
+~~~vue
+<template>
+	<div>
+    <School></School>
+    <Student></Student>
+  </div>
+</template>
+
+<script>
+  import School from './School.vue'
+  import Student from './Student.vue'
+  
+	export default{
+    name:'App',
+    components:{
+      School,
+      Student
+    }
+  }
+</script>
+~~~
+
+- main.js
+
+~~~js
+import App from './App.vue'
+
+new Vue({
+  template:`<App></App>`,
+  components:{App}
+})
+~~~
+
+- index.html
+
+~~~html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单文件组件练习</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="../../js/vue.js"></script>
+    <script src="./main.js"></script>
+</body>
+</html>
+
+~~~
+
+# Vue CLI 初始化脚手架
+
+## 初始化脚手架
+
+### 说明
+
+1. Vue脚手架是Vue官方提供的标准化开发工具
+2. 最新的版本是?
+3. 文档[Vue Cle](#https://cli.vuejs.org/zh/)
+
+### 具体步骤
+
+1. 如果下载缓慢,配置淘宝镜像npm config registry http://registry.npm.taobao.org
+2. 全局安装@Vue/cli  npm isntall -g @Vue/cli
+3. 切换到创建项目的目录,使用命令创建项目 Vue create xxx
+4. 选择使用Vue的版本
+5. 启动项目 npm run serve
+6. 打包项目 npm run build
+7. 暂停项目 ctrl + c
+
+> vue脚手架隐藏了所有webpack相关的配置,若想查看具体的webpack配置,请执行vue inspect >output.js   
+>
+> 注意:只是查看,修改不起作用,只是输出一下配置看一下
+
+### 脚手架文件结构
+
+~~~markdown
+.文件目录
+├── node_modules 
+├── public
+│   ├── favicon.ico: 页签图标
+│   └── index.html: 主页面
+├── src
+│   ├── assets: 存放静态资源
+│   │   └── logo.png
+│   │── component: 存放组件
+│   │   └── HelloWorld.vue
+│   │── App.vue: 汇总所有组件
+│   └── main.js: 入口文件
+├── .gitignore: git版本管制忽略的配置
+├── babel.config.js: babel的配置文件
+├── package.json: 应用包配置文件 
+├── README.md: 应用描述文件
+└── package-lock.json: 包版本控制文件
+~~~
+
+==src/components/School.vue==
+
+~~~vue
+<template>
+	<div class="demo">
+    <h2>学校名称:{{name}}</h2>
+    <h2>学校地址:{{address}}</h2>
+    <button @click="showName">点我提示学校名称</button>
+  </div>
+</template>
+<script>
+  export default{
+    name:"School",
+    data(){
+      return {
+        name:"sgg",
+        address:"hn"
+      }
+    },
+    methods:{
+      showName(){
+        alert(this.name)
+      }
+    }
+  }
+</script>
+<style>
+  .demo{
+    background-color: orange;
+  }
+</style>
+~~~
+
+==src/components/Student.vue==
+
+~~~vue
+<template>
+	<div>
+    <h2>学生姓名:{{name}}</h2>
+    <h2>学生年龄:{{age}}</h2>
+  </div>
+</template>
+<script>
+	export default {
+    name:'Student',
+    data(){
+      return {
+        name:"lyy",
+        age:20
+      }
+    }
+  }
+</script>
+~~~
+
+==src/App.vue==
+
+~~~vue
+<template>
+	<div>
+  	<img src="./assets/logo.png" alt="">
+   <School></School>
+   <Student></Student>
+  </div>
+</template>
+<script>
+  import School from './components/School.vue'
+  import Student from './components/Student.vue'
+	export default {
+    name:'App',
+    components:{School,Student}
+  }
+</script>
+~~~
+
+==src/main.js==
+
+~~~js
+import Vue from 'vue'
+import App from './App.vue'
+Vue.config.productionTip = false
+new Vue({
+  el:"app",
+  render:h=>h(app)
+  // render(h){
+  // retuen h(app)
+	// }
+})// .$mount('#app')
+~~~
+
+==public/index.html==
+
+~~~html
+
+<!DOCTYPE html>
+<html lang="">
+    <head>
+        <meta charset="UTF-8">
+      
+        <!-- 针对IE浏览器的特殊配置，含义是让IE浏览器以最高渲染级别渲染页面 -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      
+        <!-- 开启移动端的理想端口 -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+        <!-- 配置页签图标 <%= BASE_URL %>是public所在路径，使用绝对路径 -->
+        <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+      
+        <!-- 配置网页标题 -->
+        <title><%= htmlWebpackPlugin.options.title %></title>
+    </head>
+    <body>
+      
+      	<!-- 当浏览器不支持js时，noscript中的元素就会被渲染 -->
+      	<noscript>
+      		<strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    		</noscript>
+        <!-- 容器 -->
+        <div id="app"></div>
+    </body>
+</html>
+~~~
+
+![image-20230715131450455](assets/image-20230715131450455.png)
+
+### render函数
+
+~~~js
+import Vue from 'vue'
+import App from './App.vue'
+
+Vue.productionTip = false
+
+new Vue({
+  el:'#app',
+  // render函数功能,将App组件放入容器中
+  render:h=>h(app).
+  // 完整形式
+  //render(createElement){
+  //	return createElement(app)
+	// }
+})
+~~~
+
+### 关于不同版本的函数
+
+1. vue.js 与vue.runtime.xxx.js的区别
+
+   1. ==vue.js== 是完整版的Vue ,包含：==核心功能==+==模板解析器==
+
+   2. vue.runtime.xxx.js 是运行版的Vue，只包含核心功能，没有模板解析器
+
+      esm就是ES6 module
+
+2. 因为**vue.runtime.xxx.js**没有模板解析器，所以不能使用==template==配置项，需要使用render函数接收到的==createElement==函数去制定具体内容
+
+### Vue.config.js配置文件
+
+==vue inspect>output.js== 可以查看到Vue脚手架的默认配置
+
+使用vue.config.js可以对脚手架进行个性化定制，和package.json同级目录，详见 [配置参考 | Vue CLI](https://cli.vuejs.org/zh/config/#vue-config-js)
+
+~~~js
+modules.export={
+  pages:{
+    index:{
+      entry:'src/index/main.js'  //入口
+    }
+  },
+  lineOnsave:false  //关闭语法检查
+}
+~~~
+
+# Vue CLI  ref props mixin plugin scoped
+
+## ref属性
+
+==ref==被用来给元素或子组件注册引用信息（id的替代者）
+
+- 应用在==html== 标签上获取的是真实==DOM元素==，应用在组件标签上获取的是组件实例对象
+- 使用方式
+  - 打标识： ==<h1 ref="xxx"></h1>== 或者 ==<School ref="xxx"></School>==
+  - 获取：==this.$refs.xxx==
+
+~~~vue
+<template>
+	<div>
+    <h1 v-text="msg" ref="title"></h1>
+    <button ref="btn" @click="showBtn">点我输出上方的DOM元素</button>
+    <School ref="sch"></School>
+  </div>
+</template>
+<script>
+	import School from './components/School'
+  export default {
+    new Vue({
+    name:'App',
+    components:{School},
+    data(){
+      return{
+        msg:"欢迎学习Vue"
+      }
+    },
+    methods:{
+      showDom(){
+        console.log(this.$refs.title)
+        console.log(this.$refs.btn)
+        console.log(this.$refs.sch)
+      }
+    }
+  })
+  }
+</script>
+~~~
+
+![image-20230715133845693](assets/image-20230715133845693.png)
+
+## props配置项
+
+==props==让组件接收外部传过来的数据
+
+- ​	传递数据==<Demo name="xxx" :age="18"/>== 这里age前加==：==，通过v-bind使得里面的18是数字
+- 接收数据
+  - 第一张方式(只接收) ==props:[‘name’,‘age’]== 
+  - 第二种方式（限制类型） ==props:{name:String， age:Number}==
+  - 第三种方式（限制类型、限制必要性、指定默认值）
+
+~~~js
+props:{
+  name:{
+    type:String,
+    require:true,
+    default:'Lyy'
+  }
+}
+~~~
+
+> 备注：`props是只读的` ，``Vue`底层会监测你对props的修改，如果进行了修改，就会发出警告，若业务需求确实需要修改，那么请复制  `props` 的内容到  `data` 中，然后去修改  `data`  中的数据
+
+`src/App.vue`
+
+~~~Vue
+<template>
+	<div>
+    <Student name="李四" sex="女" :age="18"></Student>
+    <Student name="王五" sex="男" :age="19"></Student>
+  </div>
+</template>
+<script>
+	import Student from './components/Student.vue'
+  export default {
+   	name:'App',
+    components:{Student}
+  }
+</script>
+~~~
+
+`src/components/Student.vue`
+
+~~~vue
+<template>
+	<div>
+    <h1>{{msg}}</h1>
+    <h1>学生姓名：{{name}}</h1>
+    <h1>学生性别：{{sex}}</h1>
+    <h1>学生年龄：{{myAge+1}}</h1>
+    <button @click="updateAge">尝试修改收到的年龄</button>
+  </div>
+</template>
+<script>
+	export default{
+    name:'Student',
+    data(){
+      return {
+        msg:"我是一个学生",
+        myAge:this.age
+      }
+    },
+    methods:{updateAge(){this.myAge++}},
+    // 简单生命接收
+    props:['name','age','sex'],
+    
+    //接收的同时对数据进行类型限制+必要性限制+默认值指定
+    props:{
+      name:{
+        type:String,
+        require:true
+      },
+      age:{
+        type:Number,
+        default:99
+      },
+      sex:{
+        type:String,
+        require:true
+      }
+    }
+  }
+</script>
+~~~
+
+![image-20230715140320954](assets/image-20230715140320954.png)
+
+## mixin  混入
+
+1. ==功能：可以把多个组件工用的配置提取成一个混入对象==
+
+2. 使用方式
+
+   - 定义混入
+
+   ~~~js
+   const mixin = {
+     data() {...},
+     methods:{...}
+     ...
+   }
+   ~~~
+
+   - 使用混入
+     - 全局混入`Vue.mixin(){xxx}`
+     - 局部混入`mixin:['xxx']`
+
+==备注==：
+
+1. 组件和混入对象含有同名选项时，这些选项将以恰当的方式进行“合并”，在发生冲突时，以组件优先
+
+~~~js
+var mixin = {
+  data:function(){
+    return {
+      message:'hello',
+      foo:'abc'
+    }
+  }
+}
+new Vue({
+  mixins:[mixin],
+  data(){
+    return {
+      message:'goodbye',
+      bar:'def'
+    }
+  },
+  created(){
+    console.log('this.$date')
+  }
+})
+~~~
+
+![image-20230715141609820](assets/image-20230715141609820.png)
+
+2. 同名生命周期钩子将合并为一个数组，==因此都将被调用==。另外，混入对象的钩子将在组件自身钩子之前调用
+
+   > 意思就是如果混入对象的生命周期钩子和组件的生命周期钩子同名，他们两个将合并成一个数组，
+   >
+   > 先运行混入对象的生命周期钩子，然后运行组建的生命周期钩子
+
+~~~js
+var mixin={
+	created(){
+    console.log('混入对象的钩子被调用')
+  }
+}
+new Vue({
+  mixins:[mixin],
+  created(){
+    console.log('组件钩子被调用')
+  }
+})
+~~~
+
+
+
+
+
+`src/mixin.js`
+
+~~~js
+export const hunhe = {
+  methods:{
+    showName(){
+      alert(this.name)
+    }
+  },
+  mounted(){
+    console.log('你好啊!')
+  }
+}
+export const hunhe2 = {
+	data(){
+    return {
+      x:100,
+      y:200
+    }
+  }
+}
+~~~
+
+`src/components/School.vue`
+
+~~~vue
+<template>
+	<div>
+    <h2 @click="showName">学校名称：{{name}}</h2>
+    <h2>学校地址：{{address}}</h2>
+  </div>
+</template>
+<script>
+	import {hunhe,hunhe2} from '../mixin'
+  export default {
+    name:'School',
+    data(){
+      return {
+        name:'尚硅谷',
+        address:"bj",
+        x:666
+      }
+    },
+    mixins:[hunhe,hunhe2]  // 局部混入
+  }
+</script>
+~~~
+
+`src/components/Student.vue`
+
+~~~vue
+<template>
+	<div>
+    <h2 @click="showName">学生姓名：{{name}}</h2>
+    <h2>学生性别：{{sex}}</h2>
+  </div>
+</template>
+<script>
+	import {hunhe,hunhe2} from '../mixin.js'
+  export default{
+    name:'Student',
+    data(){
+      return {
+        name:'张三',
+        sex:"男"
+      }
+    },
+   mixins:[hunhe,hunhe2]
+  }
+</script>
+~~~
+
+`src/App.vue`
+
+~~~vue
+<template>
+	<div>
+    <School/>
+    <hr>
+    <Student/>
+  </div>
+</template>
+<script>
+	import Student from './components/Student.vue'
+  import School from './components/School.vue'
+  export default{
+    name:'App',
+    components:{Student,School}
+  }
+</script>
+~~~
+
+`src/main.js`
+
+~~~js
+import Vue from 'vue'
+import App from './App.vue'
+//import {mixin} from './mixin.js'
+
+Vue.config.productionTip = false
+// Vue.mixin(hunhe)
+// Vue.mixin(hunhe2)
+
+new Vue({
+  el:"#root",
+  render:h=>h(app)
+})
+~~~
+
+![image-20230715144306509](assets/image-20230715144306509.png)
+
+## plugin插件
+
+1. 功能：用于增强Vue
+2. 本质：包含`install`方法的一个对象，`install`的第一个参数是Vue，第二个以后的参数时插件使用者传递的数据
+3. 定义插件（见下方src/plugin.js）
+4. 使用插件Vue.use()
+
+​	`src/plugins.js`	
+
+```javascript
+export default {
+  install(Vue,x,y,z){
+    console.log(x,y,z)
+    //全局过滤器
+    Vue.filter('mySlice',function(vulue){return value.splice(0,4)})
+  
+  	//定义全局指令
+  	Vue.directive('fbind',{
+  		//指令与元素成功绑定
+  		bind(element,binding){element.value = binding.value},
+			//指令所在元素插入页面时
+			inserted(element,binding){element.focus()},
+			//指令所在模块重新解析时
+			update(element,binding){element.value=binding.value}
+		})
+    
+    //定义混入
+    Vue.mixin({
+      data(){return {x:100,y:200}}
+    })
+
+		//给Vue原型上添加一个方法（vm和vc旧都能用了）
+		Vue.prototype.hello = ()=>{alert('你好啊')}
+  }
+}
+```
+
+`src/main.js`
+
+~~~js
+import Vue from 'vue'
+import App from './App.vue'
+import plugins from './plugins.js'
+
+Vue.config.productionTip = false
+Vue.use(plugins,1,2,3) // 应用插件
+
+new Vue(){
+  el:'#app',
+  render:h=>h(App)
+}
+~~~
+
+`src/components/School.vue`
+
+~~~vue
+<template>
+  <div>
+    <h2>学校名称：{{ name | mySlice }}</h2>
+    <h2>学校地址：{{ address }}</h2>
+    <button @click="test">点我测试一个hello方法</button>
+  </div>
+</template>
+
+<script>
+  export default {
+    name:'School',
+    data() {
+      return {
+        name:'尚硅谷atguigu',
+        address:'北京',
+      }
+    },
+    methods: {
+      test(){
+        this.hello()
+      }
+    },
+  }
+</script>
+~~~
+
+`src/components/Student.vue`
+
+~~~vue
+<template>
+  <div>
+    <h2>学生姓名：{{ name }}</h2>
+    <h2>学生性别：{{ sex }}</h2>
+    <input type="text" v-fbind:value="name">
+  </div>
+</template>
+
+<script>
+  export default {
+    name:'Student',
+    data() {
+      return {
+        name:'张三',
+        sex:'男'
+      }
+    },
+  }
+</script>
+~~~
+
+![image-20230715150232148](assets/image-20230715150232148.png)
+
+## scoped样式
+
+1. 作用：让样式在局部生效，防止冲突
+
+2. 写法：``<style scoped>``
+
+   > ​	`vue`中的`webpack`并没有安装最新版，导致有些插件也不能默认安装最新版，如npm i less-loader@7 而不是最新版
+
+   `src/components/School.vue`
+
+   ~~~vue
+   <template>
+     <div class="demo">
+       <h2 class="title">学校名称：{{ name }}</h2>
+       <h2>学校地址：{{ address }}</h2>
+     </div>
+   </template>
+   
+   <script>
+     export default {
+       name:'School',
+       data() {
+         return {
+           name:'尚硅谷atguigu',
+           address:'北京',
+         }
+       }
+     }
+   </script>
+   
+   <style scoped>
+     .demo{
+       background-color: skyblue;
+     }
+   </style>
+   ~~~
+
+   `src/components/Student.vue`
+
+   ~~~vue
+   <template>
+     <div class="demo">
+       <h2 class="title">学生姓名：{{ name }}</h2>
+       <h2 class="atguigu">学生性别：{{ sex }}</h2>
+     </div>
+   </template>
+   
+   <script>
+     export default {
+       name: 'Student',
+       data() {
+         return {
+           name: '张三',
+           sex: '男'
+         }
+       }
+     }
+   </script>
+   
+   <style lang="less" scoped>
+     .demo {
+       background-color: pink;
+       .atguigu {
+         font-size: 40px;
+       }
+     }
+   </style>
+   ~~~
+
+   `src/App.vue`
+
+   ~~~vue
+   <template>
+     <div>
+       <h1 class="title">你好啊</h1>
+       <School/>
+       <Student/>
+     </div>
+   </template>
+   
+   <script>
+     import Student from './components/Student'
+     import School from './components/School'
+   
+     export default {
+       name: 'App',
+       components: { School, Student }
+     }
+   </script>
+   
+   <style scoped>
+     .title {
+       color: red;
+     }
+   </style>
+   ~~~
+
+
+# VueCLI Todo-List案例
+
+## 组件化编码流程
+
+1. 拆分静态组件：组件要按照功能点拆分，命名不要与html元素冲突
+
+2. 实现动态组件：考虑好数据的存放位置，数据时一个组件在用，还是一些组件再用
+
+   - 一个组件再用：放在组件自身即可
+   - 一些组件在用：放在他们共同的父组件上(==状态提示==)
+
+3. 实现交互：从绑定事件开始
+
+   `props`适用于
+
+   1. 父组件==>子组件通信
+   2. 子组件==>父组件通信 （要求父组件先给子组件一个函数）
+
+​	使用`v-model`时要切记：`v-model`绑定的值不能是`props`传来的值，因为`props`是不可以修改的只读的
+
+​	`props`传过来的若是对象类型的值，修改对象中的属性时Vue不会报错，但不推荐这样做
+
+> ​	以下代码引用了bootstrap，记得引用bootstrap
+
+`src/App.vue`
+
+~~~vue
+<template>
+	<div id="root">
+    <div class="todo-container">
+      <div class="todo-warp">
+        <MyHeader :addTodo="addTodo"/>
+        <MyList :todos="todos" :checkTodo="checkTodo" :deleTodo="deleteTodo"/>
+        <MyFooter :todos="todos" :checkAllTodo="checkAllTodo" :clearAllTodo="clearAllTodo"/>
+  		</div>
+  	</div>
+  </div>
+</template>
+<script>
+	import MyHeader from './components/MyHeader'
+  import MyList from './components/MyList'
+  import MyFooter from './components/MyFooter'
+  export default {
+    name:'App',
+    components:{MyHeader,MyList,MyFooter},
+    data(){
+      return {
+        // 由于todos是MyHeader组件和MyFooter组件都在使用，所以放在App中（状态提升）
+        todos:[
+          {id:'001',title:'抽烟',done:true},
+          {id:'002',title:'喝酒',done:false},
+          {id:'003',title:'开车',done:true}
+        ]
+      }
+    },
+    methods:{
+      //添加
+      addTodo(todoObj){
+        this.todos.unshift(todoObj)
+      },
+      //勾选or取消勾选一个todo
+      checkTodo(id){
+        this.todos.forEach((todo)=>{
+          if(todo.id===id) todo.done=!todo.done
+        })
+      },
+      //删除一个todo
+      deleteTodo(id){
+        this.todos=this.todos.filter(todo=>todo.id!=id)
+      },
+      //全选or取消全选
+      checkAllTodo(done){
+        this.todos.forEach((todo)=>{
+          todo.done=done
+        })
+      },
+      //清除所有已经完成的todo
+      clearAllTodo(){
+        this.todos=this.todos.filter((todo)=>{
+          return !todo.done
+        })
+      }
+    }
+  }
+</script>
+<style>
+  /*base*/
+  body {background: #fff;}
+  .btn {display: inline-block;padding: 4px 12px;margin-bottom: 0;font-size: 14px;
+    line-height: 20px;text-align: center;vertical-align: middle;cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;}
+  .btn-danger {color: #fff;background-color: #da4f49;border: 1px solid #bd362f;}
+  .btn-danger:hover {color: #fff;background-color: #bd362f;}
+  .btn:focus {outline: none;}
+  .todo-container {width: 600px;margin: 0 auto;}
+  .todo-container .todo-wrap {padding: 10px;border: 1px solid #ddd;border-radius: 5px;}
+</style>
+~~~
+
+`src/components/MyHeader.vue`
+
+~~~vue
+<template>
+	<div class="todo-header">
+    <input type="text" placeholder="请输入你的任务名称，按回车确认" v-model="title" @keyup.enter="add">
+  </div>
+</template>
+<script>
+	import {nanoid} from 'nanoid'
+  export default{
+    name:'MyHeader',
+    props:['addTodo'],
+    data(){
+      return {
+        title:''
+      }
+    },
+    methods:{
+      add(){
+        //校验数据
+        if(!this.title.trim()) return alert('输入不能为空')
+        //将用户输入包装成一个todo对象
+        const todoObj={id:nanoid(),title:this.title,done:false}
+        // 通知App组件去添加一个todo对象
+        this.addTodo(todoObj)
+        //清空输入
+        this.title=''
+      }
+    }
+  }
+</script>
+<style scoped>
+	/*header*/
+	.todo-header input {width: 560px;height: 28px;font-size: 14px;
+    border: 1px solid #ccc;border-radius: 4px;padding: 4px 7px;}
+	.todo-header input:focus {outline: none;border-color: rgba(82, 168, 236, 0.8);
+		box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);}
+</style>
+~~~
+
+`src/components/MyList.vue`
+
+~~~vue
+<template>
+	<ul class="todo-main">
+    <MyItem v-for="todoObj in todos" :key="todoObj.id" :todo="todoObj" :checkTodo="checkTodo" :deleteTodo></MyItem>
+  </ul>
+</template>
+<script>
+	import MyItem from './Myitem.vue'
+  export default {
+    name:'MyList',
+    components:{MyItem},
+    props:['todos','checkTodo','deleteTodo']
+  }
+</script>
+<style scoped>
+  /*main*/
+  .todo-main {margin-left: 0px;border: 1px solid #ddd;border-radius: 2px;padding: 0px;}
+  .todo-empty {height: 40px;line-height: 40px;border: 1px solid #ddd;
+    border-radius: 2px;padding-left: 5px;margin-top: 10px;}
+</style>
+~~~
+
+`src/components/MyItem.vue`
+
+~~~vue
+<template>
+	<li>
+    <label>
+  <!-- 如下代码也能实现功能，但是不太推荐，因为有点违反原则，因为修改了props -->
+      <!-- <input type="checkbox" v-model="todo.done"/> -->
+      <input type="checkbox" v-model="todo.done">
+      <span>{{todo.title}}</span>
+  	</label>
+    <button class="btn btn-dangeer" @click="handleDelete(todo.id)">删除</button>
+  </li>
+</template>
+<script>
+	export default{
+    name:'MyItem',
+    props:['todo','checkTodo','deleteTodo'],
+    methods:{
+      //勾选or 取消勾选
+      handleCheck(id){
+        this.checkTodo(id)
+      },
+      //删除
+      handleDelete(id){
+       	if(confirm('确认删除吗？')){
+          this.deleteTodo(id)
+        }
+      }
+    }
+  }
+</script>
+<style scoped>
+  /*item*/
+  li {list-style: none;height: 36px;line-height: 36px;padding: 0 5px;
+    border-bottom: 1px solid #ddd;}
+  li label {float: left;cursor: pointer;}
+  li label li input {vertical-align:middle; margin-right:6px; position:relative;top: -1px;}
+  li button {float: right;display: none;margin-top: 3px;}
+  li:before {content: initial;}
+  li:last-child {border-bottom: none;}
+  li:hover{background-color: #ddd;}
+  li:hover button{display: block;}
+</style>
+~~~
+
+`src/components/MyFooter.vue`
+
+~~~vue
+<template>
+	<div class="todo-footer" v-show="total">
+    <label>
+       <!-- <input type="checkbox" :checked="isAll" @change="checkAll"/> -->
+      <input type="checkbox" v-model="isAll">
+  	</label>
+    <span>
+  		<span>已完成{{doneTotal}}/全部{{total}}</span>
+  	</span>
+    <button class="btn btn-danger" @click="clearAll">清除已完成任务</button>
+  </div>
+</template>
+<script>
+	export default{
+    name:'MyFooter',
+    props:['todos','checkAllTodo','clearAllTodo'],
+    computed:{
+      //总数
+      total(){
+        return this.todos.length
+      },
+      //已完成数量
+      doneTotal(){
+        //此处使用reduce方法做条件统计
+        return this.reduce((pre,todo)=>pro + (todo.done?1:0),0)
+      },
+      //控制全选框
+      isAll:{
+        get(){
+          return this.doneTotal === this.total && this.total>0
+        },
+        // isAll被修改时set被调用
+        set(value){
+          this.checkAllToodo(value)
+        }
+      }
+    },
+    methods:{
+       /* checkAll(e){
+				this.checkAllTodo(e.target.checked)
+			} */
+      //清空所有已完成
+      clearAll(){
+        this.clearAllTodo()
+      }
+    }
+  }
+</script>
+<style scoped>
+  /*footer*/
+  .todo-footer {height: 40px;line-height: 40px;padding-left: 6px;margin-top: 5px;}
+  .todo-footer label {display: inline-block;margin-right: 20px;cursor: pointer;}
+  .todo-footer label input {position: relative;top: -1px;vertical-align: middle;
+    margin-right: 5px;}
+  .todo-footer button {float: right;margin-top: 5px;}
+</style>
+~~~
+
+![image-20230715160422136](assets/image-20230715160422136.png)
+
+# Vue CLI 本地存储 自定义事件
+
+## WebStorage（js本地存储）
+
+存储内容大小一般为5MB左右(不同浏览器可能还不一样)
+
+浏览器通过`Window.sessionStorage`和`window.localStorage`属性来实现本地存储机制
+
+相关API
+
+> ​	`xxxStorage.setItem('key', 'value')`该方法接受一个键和值作为参数，会把键值对添加到存储中，如果键名存在，则更新其对应的值
+>
+> ​	`xxxStorage.getItem('key')`该方法接受一个键名作为参数，返回键名对应的值
+>
+> ​	`xxxStorage.removeItem('key')`该方法接受一个键名作为参数，并把该键名从存储中删除
+>
+> ​	`xxxStorage.clear()`该方法会清空存储中的所有数据
+
+备注：
+
+> `sessionStorage`存储的内容会随着浏览器窗口关闭消失
+>
+> `localStorage`存储的内容需要手动清除才会消除
+>
+> `xxxStorage.getItem(xxx)` 如果xxx对应的Value 获取不到，那么getItem()的返回值是`null`
+>
+> `JSON.parse(null)` 的结果依然是`null`
+
+==localStorage==
+
+~~~html
+<h2>localStorage</h2>
+<button onclick="saveDate()">点我保存数据</button><br/>
+<button onclick="readDate()">点我读数据</button><br/>
+<button onclick="deleteDate()">点我删除数据</button><br/>
+<button onclick="deleteAllDate()">点我清空数据</button><br/>
+
+<script>
+  let person = {name:"JOJO",age:20}
+
+  function saveDate(){
+    localStorage.setItem('msg','localStorage')
+    localStorage.setItem('person',JSON.stringify(person))
+  }
+  function readDate(){
+    console.log(localStorage.getItem('msg'))
+    const person = localStorage.getItem('person')
+    console.log(JSON.parse(person))
+  }
+  function deleteDate(){
+    localStorage.removeItem('msg')
+    localStorage.removeItem('person')
+  }
+  function deleteAllDate(){
+    localStorage.clear()
+  }
+</script>
+~~~
+
+==sessionStorage==
+
+~~~html
+<h2>sessionStorage</h2>
+<button onclick="saveDate()">点我保存数据</button><br/>
+<button onclick="readDate()">点我读数据</button><br/>
+<button onclick="deleteDate()">点我删除数据</button><br/>
+<button onclick="deleteAllDate()">点我清空数据</button><br/>
+
+<script>
+  let person = {name:"JOJO",age:20}
+
+  function saveDate(){
+    sessionStorage.setItem('msg','sessionStorage')
+    sessionStorage.setItem('person',JSON.stringify(person))
+  }
+  function readDate(){
+    console.log(sessionStorage.getItem('msg'))
+    const person = sessionStorage.getItem('person')
+    console.log(JSON.parse(person))
+  }
+  function deleteDate(){
+    sessionStorage.removeItem('msg')
+    sessionStorage.removeItem('person')
+  }
+  function deleteAllDate(){
+    sessionStorage.clear()
+  }
+</script>
+~~~
+
+### 使用本地存储优化Todo-List
+
+`src/App.vue`
+
+~~~vue
+
+<template>
+	<div id="root">
+		<div class="todo-container">
+			<div class="todo-wrap">
+				<MyHeader :addTodo="addTodo"/>
+				<MyList :todos="todos" :checkTodo="checkTodo" :deleteTodo="deleteTodo"/>
+				<MyFooter :todos="todos" :checkAllTodo="checkAllTodo" :clearAllTodo="clearAllTodo"/>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	import MyHeader from './components/MyHeader'
+	import MyList from './components/MyList'
+	import MyFooter from './components/MyFooter.vue'
+
+	export default {
+		name:'App',
+		components:{MyHeader,MyList,MyFooter},
+		data() {
+			return {
+				// 🔴从本地存储中获得数据，null就创建空数组[]
+				todos:JSON.parse(localStorage.getItem('todos')) || []
+			}
+		},
+		methods: {
+			//添加一个todo
+			addTodo(todoObj){
+				this.todos.unshift(todoObj)
+			},
+			//勾选or取消勾选一个todo
+			checkTodo(id){
+				this.todos.forEach((todo)=>{
+					if(todo.id === id) todo.done = !todo.done
+				})
+			},
+			//删除一个todo
+			deleteTodo(id){
+				this.todos = this.todos.filter( todo => todo.id !== id )
+			},
+			//全选or取消全选
+			checkAllTodo(done){
+				this.todos.forEach((todo)=>{
+					todo.done = done
+				})
+			},
+			//清除所有已经完成的todo
+			clearAllTodo(){
+				this.todos = this.todos.filter((todo)=>{
+					return !todo.done
+				})
+			}
+		},
+    // 🔴数据发生改变就放到本地存储中，注意深度侦听，以及JSON转化为字符串
+		watch: {
+			todos:{
+				deep:true,
+				handler(value){
+					localStorage.setItem('todos',JSON.stringify(value))
+				}
+			}
+		},
+	}
+</script>
+~~~
+
+## 组件的自定义事件
+
+1. 一种组件间通信的方式，适用于：**子组件===>父组件**
+
+2. 使用场景：**子组件**想给**父组件**传送数据，那么就要在**父组件中给子组件绑定自定义事件**(事件的回调在A中)
+
+3. 绑定自定义事件
+
+   1. 第一种方式，在父组件中`<Demo @事件名=“方法”>或者<Demo v-on:事件名=“方法”>`
+
+   2. 第二种方式：在负组件中`this.$refs.demo.$on('事件名',方法)`
+
+      ~~~js
+      <Demo ref="demo"/>
+        ...
+      mounted(){
+        this.$ref.demo.$on('atguigu',this.test)
+      }
+      ~~~
+
+      
+
+   3. 若想让自定义事件只触发一次，可以使用**`once`**修饰符，或`$once`方法
+   
+   4. 触发自定义事件`this.$emit('事件名',函数)`
+   
+   5. 解绑自定义事件`this.$off('事件名')`
+   
+   6. 组件上可以绑定原生**DOM**事件需要使用`native`修饰符，`@click.native='show'`
+   
+      上面绑定自定义事件，即使绑定的是原生事件也被认为是自定义的，需要加`native`，加了后就将此事件给组件的根元素
+   
+   7. 注意：通过==`this.$refs.xxx.$on('事件名',回调函数)`==绑定自定义事件时，回调函数要么配置在methods中，要么用箭头函数，否则this指向会出问题
+
+`src/App.vue`
+
+~~~vue
+<template>
+	<div class="app">
+    <h1>{{msg}},学生姓名是{{studentName}}</h1>
+    <!--通过父组件给子组件传递函数类型的prop实现子给父传递数据-->
+    <School :getSchoolName="getSchoolName"/>
+    <!-- 通过父组件给子组件绑定一个自定义事件实现子给父传递数据(第一张写法，使用@或者v-on)-->
+    <!--<School @atguigu="getSchoolName" @demo="m1"/> -->
+   <!-- 通过父组件给子组件绑定一个自定义事件实现子给父传递数据（第二种写法，使用ref）-->
+    <Student ref="student" @click.native="show"/><!-- 🔴native -->
+  </div>
+</template>
+<script>
+	import Student from './components/Student'
+  import School from './components/School'
+  
+  export default{
+    name:'App',
+    components:{School,Student},
+    data(){
+      return {
+        msg:'你好啊！',
+        studentName:''
+      }
+    },
+    methods:{
+      getSchoolName(name){
+        console.log('App收到了学校名',name)
+      },
+      getStudentName(name,...params){
+        console.log('App收到了学生名',name,params)
+      },
+      m1(){
+        console.log('demo事件被触发了！')
+      },
+      show(){
+        alert(123)
+      }
+    },
+    mounted(){
+      this.$refs.Student.$on('atguigu',this.getStydebtBane)
+    }
+  }
+</script>
+~~~
+
+`src/components/Student.vue`
+
+~~~vue
+<template>
+	<div class="student">
+    <h2>学生姓名：{{name}}</h2>
+    <h2>学生性别：{{sex}}</h2>
+    <h2>当前求和为：{{number}}</h2>
+    <button @click="add">点我number++</button>
+    <button @click="sendStudentName">把学生名给App</button>
+    <button @clcik="unbind">解绑atguigu事件</button>
+    <button @click=“death>销毁当前Student组件的实例(vc)</button>
+  </div>
+</template>
+<script>
+	export default{
+    name:"Student",
+    data(){
+      return {
+        name:'张三',
+        sex:'男',
+        number:0
+      }
+    },
+    methods:{
+      add(){
+        console.log('add回调被调用了')
+        this.number++
+      },
+      sendStudentName(){
+        //触发Student组件实例身上的atguigu事件
+        this.$emit('atguigu',this.name,666,888,999)
+        // this.$emit('demo')
+        // this.$emit('click')
+      },
+      unbind(){
+        //解绑
+        this.$off('atguigu') //解绑一个自定义事件
+        // this.$off(['atguigu','demo'])   //解绑多个自定义事件
+        // this.$off() //解绑所有的自定义事件
+      },
+      death(){
+        //销毁了当前Student组件的实例，销毁后所有Student实例的自定义事件全部不奏效
+        this.$destroy()
+      }
+    }
+  }
+</script>
+<style leng="less" scoped>
+		.student{background-color: pink;padding: 5px;margin-top: 30px;}
+</style>
+~~~
+
+## **使用自定义事件优化Todo-List**
+
+`src/App.vue`
+
+~~~vue
+<template>
+	<div id="root">
+		<div class="todo-container">
+			<div class="todo-wrap">
+				<MyHeader @addTodo="addTodo"/>
+				<MyList :todos="todos" :checkTodo="checkTodo" :deleteTodo="deleteTodo"/>
+				<MyFooter :todos="todos" 
+                  @checkAllTodo="checkAllTodo" @clearAllTodo="clearAllTodo"/>
+			</div>
+		</div>
+	</div>
+</template>
+
+<script>
+	import MyHeader from './components/MyHeader'
+	import MyList from './components/MyList'
+	import MyFooter from './components/MyFooter.vue'
+
+	export default {
+		name:'App',
+		components:{MyHeader,MyList,MyFooter},
+		data() {
+			return {
+				//由于todos是MyHeader组件和MyFooter组件都在使用，所以放在App中（状态提升）
+				todos:JSON.parse(localStorage.getItem('todos')) || []
+			}
+		},
+		methods: {
+			//添加一个todo
+			addTodo(todoObj){
+				this.todos.unshift(todoObj)
+			},
+			//勾选or取消勾选一个todo
+			checkTodo(id){
+				this.todos.forEach((todo)=>{
+					if(todo.id === id) todo.done = !todo.done
+				})
+			},
+			//删除一个todo
+			deleteTodo(id){
+				this.todos = this.todos.filter( todo => todo.id !== id )
+			},
+			//全选or取消全选
+			checkAllTodo(done){
+				this.todos.forEach((todo)=>{
+					todo.done = done
+				})
+			},
+			//清除所有已经完成的todo
+			clearAllTodo(){
+				this.todos = this.todos.filter((todo)=>{
+					return !todo.done
+				})
+			}
+		},
+		watch: {
+			todos:{
+				deep:true,
+				handler(value){
+					localStorage.setItem('todos',JSON.stringify(value))
+				}
+			}
+		},
+	}
+</script>
+~~~
+
+`src/components/MyHeader.vue`
+
+~~~vue
+<template>
+	<div class="todo-header">
+		<input type="text" placeholder="请输入你的任务名称，按回车键确认" 
+           v-model="title" @keyup.enter="add"/>
+	</div>
+</template>
+
+<script>
+	import {nanoid} from 'nanoid'
+	export default {
+		name:'MyHeader',
+		data() {
+			return {
+				title:''	// 收集用户输入的title
+			}
+		},
+		methods: {
+			add(){
+				//校验数据
+				if(!this.title.trim()) return alert('输入不能为空')
+				//将用户的输入包装成一个todo对象
+				const todoObj = {id:nanoid(),title:this.title,done:false}
+				//通知App组件去添加一个todo对象
+				this.$emit('addTodo',todoObj)
+				//清空输入
+				this.title = ''
+			}
+		},
+	}
+</script>
+~~~
+
+`src/components/MyFooter`
+
+~~~vue
+<template>
+	<div class="todo-footer" v-show="total">
+		<label>
+			<!-- <input type="checkbox" :checked="isAll" @change="checkAll"/> -->
+			<input type="checkbox" v-model="isAll"/>
+		</label>
+		<span>
+			<span>已完成{{ doneTotal }}</span> / 全部{{ total }}
+		</span>
+		<button class="btn btn-danger" @click="clearAll">清除已完成任务</button>
+	</div>
+</template>
+
+<script>
+	export default {
+		name:'MyFooter',
+		props:['todos'],
+		computed: {
+			//总数
+			total(){
+				return this.todos.length
+			},
+			//已完成数
+			doneTotal(){
+				return this.todos.reduce((pre,todo)=> pre + (todo.done ? 1 : 0) ,0)
+			},
+			//控制全选框
+			isAll:{
+				//全选框是否勾选
+				get(){
+					return this.doneTotal === this.total && this.total > 0
+				},
+				//isAll被修改时set被调用
+				set(value){
+					// this.checkAllTodo(value)
+					this.$emit('checkAllTodo',value)
+				}
+			}
+		},
+		methods: {
+			//清空所有已完成
+			clearAll(){
+				// this.clearAllTodo()
+				this.$emit('clearAllTodo')
+			}
+		},
+	}
+</script>
+~~~
+
+# Vue CLI 全局事件总线 消息的订阅与发布
+
+## 全局事件总线（GlobalEventBus）
+
+**一种可以在任意组件间通信的方式**，本质上是一个对象，它必须满足以下条件
+
+1. 所有的组件对象都必须能看见它
+2. 这个对象必须能够使用`$on``$emit` `$off` 方法去绑定、触发和解绑事件
+
+### 使用步骤
+
+1. 定义全局事件总线
+
+   ~~~js
+   new Vue({
+   	...
+   	beforeCreate(){
+     	Vue.prototype.$bus=this
+   	},
+      ...
+   })
+   ~~~
+
+2. 使用事件总线
+
+   1. 接受数据：A组件想接收数据，则在A组件中给`$bus`绑定自定义事件，时间的回调留在A组件自身
+
+      ~~~js
+      export default{
+        methods:{
+          demo(data){...}
+        },
+          mounted(){
+            this.$bus.$on('xxx',this.demo)
+          }
+      }
+      ~~~
+
+   2. 提供数据：`this.$bus.$emit('xxx',data)`
+
+3. 最好在`beforeDestroy`钩子中，用`$off`去解绑当前组件所用到的事件
+
+`src/main.js`
+
+~~~js
+import Vue from 'vue'
+import App from './App.vue'
+
+Vue.config.productionTip = false
+
+new Vue({
+  el:'#app',
+  render:h=>h(App)
+  beforeCreate(){
+  Vue.prototype.$bus=this //安装全局事件总线 
+}
+})
+~~~
+
+`src/App.vue`
+
+~~~vue
+<template>
+	<div class="app">
+    <School/>
+    <Student/>	
+  </div>
+</template>
+<script>
+	import Student from './components/Student.vue'
+  import School from './components/School.vue'
+  
+  export default{
+    name:'App',
+    components:{Student,School},
+  }
+</script>
+<style scoped>
+.app{background-color: gray;padding: 5px;}
+</style>
+~~~
+
+`src/components/School.vue`
+
+~~~vue
+<template>
+	<div class="school">
+    <h2>学校名称：{{name}}</h2>
+    <h2>学校地址：{{address}}</h2>
+  </div>
+</template>
+<script>
+	export default{
+    name:'School',
+    data(){
+      return {
+        name:'sgg',
+        address:"hn"
+      }
+    },
+    mounted(){
+      this.$bus.$on('hello',(data)=>{
+        console.log('我是School组件，我收到了数据',data)
+      })
+    },
+    beforeDestroy(){
+      this.$bus.$off('hello')
+    }
+  }
+</script>
+~~~
+
+`src/components/Student.vue`
+
+~~~vue
+<template>
+	<div class="student">
+    <h2>学生姓名：{{name}}</h2>
+    <h2>学生性别：{{sex}}</h2>
+    <button @click="sendStudentName">把学生名给School组件</button>
+  </div>
+</template>
+<script>
+	export default{
+    name:'Student',
+    data(){
+      return {
+        name:"张三",
+        sex:"男"
+      }
+    },
+    methods:{
+      sendStudentName(){
+        this.$bus.$emit('demo',this.name)
+      }
+    }
+  }
+</script>
+<style scoped>.student{background-color: pink;padding: 5px;margin-top: 30px;}</style>
+~~~
+
+![image-20230715173803819](assets/image-20230715173803819.png)
+
+### 使用自定义事件优化Todo-List
+
+`src/mian.js`
+
+~~~ js
+import Vue from 'vue'
+import App from './App.vue'
+Vue.config.productionTip = false
+
+new Vue({
+  el:'#app',
+  render: h => h(App),
+  beforeCreate() {
+    Vue.prototype.$bus = this
+  },
+})
+~~~
+
+`src/App.vue`
+
+~~~vue
+<template>
+  <div id="root">
+    <div class="todo-container">
+      <div class="todo-wrap">
+        <MyHeader @addTodo="addTodo" />
+        <MyList :todos="todos"/>
+        <MyFooter :todos="todos" @checkAllTodo="checkAllTodo" @clearAllTodo="clearAllTodo"/>
+    </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import MyHeader from "./components/MyHeader";
+  import MyList from "./components/MyList";
+  import MyFooter from "./components/MyFooter.vue";
+
+  export default {
+    name: "App",
+    components: { MyHeader, MyList, MyFooter },
+    data() {
+      return {
+        //由于todos是MyHeader组件和MyFooter组件都在使用，所以放在App中（状态提升）
+        todos: JSON.parse(localStorage.getItem("todos")) || [],
+      };
+    },
+    methods: {
+      //添加一个todo
+      addTodo(todoObj) {
+        this.todos.unshift(todoObj);
+      },
+      //勾选or取消勾选一个todo
+      checkTodo(id) {
+        this.todos.forEach((todo) => {
+          if (todo.id === id) todo.done = !todo.done;
+        });
+      },
+      //删除一个todo
+      deleteTodo(id) {
+        this.todos = this.todos.filter((todo) => todo.id !== id);
+      },
+      //全选or取消全选
+      checkAllTodo(done) {
+        this.todos.forEach((todo) => {
+          todo.done = done;
+        });
+      },
+      //清除所有已经完成的todo
+      clearAllTodo() {
+        this.todos = this.todos.filter((todo) => {
+          return !todo.done;
+        });
+      },
+    },
+    watch: {
+      todos: {
+        deep: true,
+        handler(value) {
+          localStorage.setItem("todos", JSON.stringify(value));
+        },
+      },
+    },
+    mounted() {
+      this.$bus.$on("checkTodo", this.checkTodo);
+      this.$bus.$on("deleteTodo", this.deleteTodo);
+    },
+    beforeDestroy() {
+      this.$bus.$off("checkTodo");
+      this.$bus.$off("deleteTodo");
+    },
+  };
+</script>
+~~~
+
+`src/components/MyItem.vue`
+
+~~~vue
+<template>
+<li>
+  <label>
+    <input type="checkbox" :checked="todoObj.done" @change="handleCheck(todoObj.id)"/>
+    <span>{{ todoObj.title }}</span>
+  </label>
+  <button class="btn btn-danger" @click="handleDelete(todoObj.id)">删除</button>
+  </li>
+</template>
+
+<script>
+  export default {
+    name: "MyItem",
+    data() {
+      return {};
+    },
+    props: ["todoObj"], // 声明接受todoObj对象
+    methods: {
+      handleCheck(id) {
+        this.$bus.$emit('checkTodo', id)
+      },
+      handleDelete(id) {
+        if (confirm('确定删除吗？')) {
+          this.$bus.$emit('deleteTodo', id)
+        }
+      }
+    },
+  };
+</script>
+~~~
+
+## 消息的发布与订阅
+
+消息发布与订阅(pubsub)   消息订阅与发布是一种组件间通信的方式，适用于任意组件间通信
+
+### 使用步骤
+
+1. 安装pubsub `npm i pubsub-js`
+
+2. 引入`import pubsub from 'pubsub-js'`
+
+3. 接收数据：A组件想接收数据，则在A组件中订阅消息，订阅的回调留在A组件自身
+
+   ~~~js
+   export default{
+     methods：{
+     	demo(msgName,data){...}
+   	},
+     mounted(){
+       this.pid=pubsub.subscribe('xxx',this.demo)
+     }
+   }
+   ~~~
+
+   
+
+4. 提供数据`pubsub.publish('xxx',data)`
+
+5. 最好在beforeDestroy钩子中，使用`pubsub.unsubscribe(pid)`取消订阅
+
+`src/components/School.vue`
+
+~~~vue
+<template>
+	<div class="school">
+		<h2>学校名称：{{name}}</h2>
+		<h2>学校地址：{{address}}</h2>
+	</div>
+</template>
+
+<script>
+	import pubsub from 'pubsub-js'
+
+	export default {
+		name: 'School',
+		data() {
+			return {
+				name:'尚硅谷',
+				address:'北京',
+			}
+		},
+		methods: {
+			demo(msgName, data) {
+				console.log('我是School组件，收到了数据：',msgName, data)
+			}
+		},
+		mounted() {
+			this.pubId = pubsub.subscribe('demo', this.demo) // 订阅消息
+		},
+		beforeDestroy() {
+			pubsub.unsubscribe(this.pubId) // 取消订阅
+		}
+	}
+</script>
+
+<style scoped>
+	.school{
+		background-color: skyblue;
+		padding: 5px;
+	}
+</style>
+~~~
+
+`src/components/Student.vue`
+
+~~~vue
+<template>
+  <div class="student">
+    <h2>学生姓名：{{name}}</h2>
+    <h2>学生性别：{{sex}}</h2>
+    <button @click="sendStudentName">把学生名给School组件</button>
+  </div>
+</template>
+
+<script>
+  import pubsub from 'pubsub-js'
+
+  export default {
+    name:'Student',
+    data() {
+      return {
+        name:'JOJO',
+        sex:'男',
+      }
+    },
+    methods: {
+      sendStudentName(){
+        pubsub.publish('demo', this.name) // 发布消息
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .student{
+    background-color: pink;
+    padding: 5px;
+    margin-top: 30px;
+  }
+</style>
+~~~
+
+### 使用消息的订阅与发布优化Todo-List
+
+`src/App.vue`
+
+~~~vue
+<template>
+<div id="root">
+  <div class="todo-container">
+    <div class="todo-wrap">
+      <MyHeader @addTodo="addTodo"/>
+      <MyList :todos="todos"/>
+      <MyFooter :todos="todos" @checkAllTodo="checkAllTodo" @clearAllTodo="clearAllTodo"/>
+  	</div>
+  </div>
+</div>
+</template>
+
+<script>
+  import pubsub from 'pubsub-js'	// 习惯第三方库写上面
+  import MyHeader from './components/MyHeader.vue'
+  import MyList from './components/MyList.vue'
+  import MyFooter from './components/MyFooter.vue'
+
+
+  export default {
+    name:'App',
+    components: { MyHeader,MyList,MyFooter },
+    data() {
+      return {
+        todos:JSON.parse(localStorage.getItem('todos')) || []
+      }
+    },
+    methods:{
+      //添加一个todo
+      addTodo(todoObj){
+        this.todos.unshift(todoObj)
+      },
+      //勾选or取消勾选一个todo
+      checkTodo(_,id){
+        this.todos.forEach((todo)=>{
+          if(todo.id === id) todo.done = !todo.done
+        })
+      },
+      //删除一个todo
+      deleteTodo(id){
+        this.todos = this.todos.filter(todo => todo.id !== id)
+      },
+      //全选or取消勾选
+      checkAllTodo(done){
+        this.todos.forEach(todo => todo.done = done)
+      },
+      //删除已完成的todo
+      clearAllTodo(){
+        this.todos = this.todos.filter(todo => !todo.done)
+      }
+    },
+    watch:{
+      todos:{
+        deep:true,
+        handler(value){
+          localStorage.setItem('todos',JSON.stringify(value))
+        }
+      }
+    },
+    mounted(){
+      this.pubId = pubsub.subscribe('checkTodo',this.checkTodo)	// 两种对比
+      this.$bus.$on('deleteTodo',this.deleteTodo)
+    },
+    beforeDestroy(){
+      pubsub.unsubscribe(this.pubId)
+      this.$bus.$off('deleteTodo')
+    }
+  }
+</script>
+
+<style>
+  body {
+    background: #fff;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+  }
+
+  .btn-danger {
+    color: #fff;
+    background-color: #da4f49;
+    border: 1px solid #bd362f;
+  }
+
+  .btn-danger:hover {
+    color: #fff;
+    background-color: #bd362f;
+  }
+
+  .btn:focus {
+    outline: none;
+  }
+
+  .todo-container {
+    width: 600px;
+    margin: 0 auto;
+  }
+  .todo-container .todo-wrap {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+</style>
+~~~
+
+`src/components/myItem.vue`
+
+~~~vue
+<template>
+    <li>
+        <label>
+            <input type="checkbox" :checked="todo.done" @click="handleCheck(todo.id)"/>
+            <span>{{todo.title}}</span>
+        </label>
+        <button class="btn btn-danger" @click="handleDelete(todo.id,todo.title)">删除</button>
+    </li>
+</template>
+
+<script>
+    import pubsub from 'pubsub-js'
+    export default {
+        name:'MyItem',
+        props:['todo'],
+        methods:{
+            handleCheck(id){                    
+                pubsub.publish('checkTodo',id)
+            },
+            handleDelete(id,title){
+                if(confirm("确定删除任务："+title+"吗？")){
+                    this.$bus.$emit('deleteTodo',id)
+                }
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    li {
+        list-style: none;
+        height: 36px;
+        line-height: 36px;
+        padding: 0 5px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    li label {
+        float: left;
+        cursor: pointer;
+    }
+
+    li label li input {
+        vertical-align: middle;
+        margin-right: 6px;
+        position: relative;
+        top: -1px;
+    }
+
+    li button {
+        float: right;
+        display: none;
+        margin-top: 3px;
+    }
+
+    li:before {
+        content: initial;
+    }
+
+    li:last-child {
+        border-bottom: none;
+    }
+
+    li:hover {
+        background-color: #eee;
+    }
+
+    li:hover button{
+        display: block;
+    }
+</style>
+~~~
+
