@@ -234,7 +234,7 @@ data有两种写法
 
 # MVVM模型 数据代理
 
-![img](https://cdn.nlark.com/yuque/0/2022/jpeg/1379492/1643097677438-36b4834c-18e8-4cd0-aa8e-c5f154e6bde0.jpeg?x-oss-process=image%2Fresize%2Cw_697%2Climit_0%2Finterlace%2C1)
+![1](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//1.jpeg)
 
 ## MVVM 模型
 
@@ -326,7 +326,7 @@ Object.defineproperty(obj2,'x',{
 })
 ~~~
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643033436297-5d2d61ec-ed69-4706-a98d-afdbd53b383d.png?x-oss-process=image%2Fresize%2Cw_1125%2Climit_0)
+![20210811214920](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//20210811214920.png)
 
 Vue将data中的数据拷贝了一份到_data属性中，又将 _data里面的属性提取到Vue实例中，(如name)，通过defineproperty 实现数据代理，这样通过getter/setter操作name，进而操作 _data中的name，而 _data又对data进行数据劫持，实现响应式
 
@@ -1304,9 +1304,9 @@ class样式
 
 ## key的作用与原理
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643033767087-2558e992-b48b-4b54-a9b8-86eb8534bd98.png)
+![**key问题1**](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//key问题1.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643033764359-6a37a493-bb51-4b3b-8b14-822a3df68d6e.png)
+![key问题2](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//key问题2.png)
 
 面试题：react vue中的key有什么作用？(key的内部原理)
 
@@ -2114,7 +2114,7 @@ new Vue({
 
 ## 分析生命周期
 
-![生命周期.png](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643297176928-5d5ac765-237c-462d-9188-84935e6c3c69.png?x-oss-process=image%2Fresize%2Cw_1125%2Climit_0)
+![生命周期](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//生命周期.png)
 
 ~~~html
 <title>分析生命周期</title>
@@ -2241,9 +2241,9 @@ new Vue({
 
 ## 模块与组件、模块化与组件化
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643034111142-590bfdbc-e993-4f4f-9a75-110cba2f890d.png)
+![传统方式编写应用](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//传统方式编写应用.png)
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643034111832-4a659e2d-4a13-4944-a153-ab038b65cbf0.png)
+![组件方式编写应用](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//组件方式编写应用.png)
 
 模块
 	a.理解：向外提供特定功能的 js 程序，一般就是一个 js 文件
@@ -2440,7 +2440,7 @@ new Vue({
 
 ### 组件的嵌套
 
-![img](https://cdn.nlark.com/yuque/0/2022/png/1379492/1643034109512-1a1a9c24-a474-4022-83b6-b6a16216151a.png?x-oss-process=image%2Fresize%2Cw_1125%2Climit_0)
+![组件嵌套](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//组件嵌套.png)
 
 ~~~html
     <title>组件的嵌套</title>
