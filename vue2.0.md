@@ -417,7 +417,7 @@ Vue将data中的数据拷贝了一份到_data属性中，又将 _data里面的�
 </html>
 ~~~
 
-![image-20230714095041047](../AppData/Roaming/Typora/typora-user-images/image-20230714095041047.png)
+![image-20230714095041047](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714095041047.png)
 
 ## 事件修饰符
 
@@ -644,7 +644,7 @@ Vue将data中的数据拷贝了一份到_data属性中，又将 _data里面的�
 
 ~~~
 
-![image-20230714111517868](../AppData/Roaming/Typora/typora-user-images/image-20230714111517868.png)
+![image-20230714111517868](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714205006998.png)
 
 # 计算属性 侦听属性
 
@@ -997,7 +997,7 @@ Vue将data中的数据拷贝了一份到_data属性中，又将 _data里面的�
     </script>
 ~~~
 
-![image-20230714202215407](../AppData/Roaming/Typora/typora-user-images/image-20230714202215407.png)
+![image-20230714202215407](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714202942366.png)
 
 
 
@@ -1024,7 +1024,7 @@ computed和watch之间的区别
 两个重要的小原则
 
 - 所有被Vue管理的函数，最好写城普通函数，这样this的指向才是vm或者组件实例对象
-- 所有不被Vue管理的函数，(定时器的回调函数、ajax的回调函数、Promise的回调函数)最好写成箭头函数，这样this的指向才是vm或者组件实例对象![image-20230714202942366](../AppData/Roaming/Typora/typora-user-images/image-20230714202942366.png)
+- 所有不被Vue管理的函数，(定时器的回调函数、ajax的回调函数、Promise的回调函数)最好写成箭头函数，这样this的指向才是vm或者组件实例对象![image-20230714202942366](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714202215407.png)
 
 使用计算属性
 
@@ -1174,7 +1174,7 @@ class样式
     </script>
 ~~~
 
-![image-20230714205006998](../AppData/Roaming/Typora/typora-user-images/image-20230714205006998.png)
+![image-20230714205006998](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714111517868.png)
 
 ## 条件渲染
 
@@ -1298,7 +1298,7 @@ class样式
     </script>
 ~~~
 
-![image-20230714211320091](../AppData/Roaming/Typora/typora-user-images/image-20230714211320091.png)
+![image-20230714211320091](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714211320091.png)
 
 
 
@@ -1363,7 +1363,7 @@ class样式
     </script>
 ~~~
 
-![image-20230714212428779](../AppData/Roaming/Typora/typora-user-images/image-20230714212428779.png)
+![image-20230714212428779](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715095923074.png)
 
 ## 列表过滤
 
@@ -1431,7 +1431,7 @@ class样式
     </script>
 ~~~
 
-![image-20230714213317339](../AppData/Roaming/Typora/typora-user-images/image-20230714213317339.png)
+![image-20230714213317339](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714213317339.png)
 
 数据监视
 
@@ -1691,7 +1691,7 @@ c. trim 输入的字符串去掉首尾空格过滤
 
 
 
-![image-20230715095923074](../AppData/Roaming/Typora/typora-user-images/image-20230715095923074.png)
+![image-20230715095923074](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230714212428779.png)
 
 ## 过滤器(Vue3以及移除)
 
@@ -1742,7 +1742,7 @@ c. trim 输入的字符串去掉首尾空格过滤
 
 
 
-![image-20230715101319847](../AppData/Roaming/Typora/typora-user-images/image-20230715101319847.png)
+![image-20230715101319847](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715101753712.png)
 
 # 内置指令 自定义指令
 
@@ -1791,7 +1791,7 @@ c. trim 输入的字符串去掉首尾空格过滤
     </script>
 ~~~
 
-![image-20230715101753712](../AppData/Roaming/Typora/typora-user-images/image-20230715101753712.png)
+![image-20230715101753712](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715102217100.png)
 
 ### v-html指令
 
@@ -1829,7 +1829,7 @@ c. trim 输入的字符串去掉首尾空格过滤
     </script>
 ~~~
 
-![image-20230715102217100](../AppData/Roaming/Typora/typora-user-images/image-20230715102217100.png)
+![image-20230715102217100](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715102919846.png)
 
 ### v-cloak指令
 
@@ -1888,7 +1888,7 @@ v-once所在节点在初次动态渲染后，就视为静态内容了，
 
 
 
-![image-20230715102919846](../AppData/Roaming/Typora/typora-user-images/image-20230715102919846.png)
+![image-20230715102919846](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715101319847.png)
 
 ### v-pre指令
 
@@ -2063,7 +2063,7 @@ new Vue({
     </script>
 ~~~
 
-![image-20230715104812637](../AppData/Roaming/Typora/typora-user-images/image-20230715104812637.png)
+![image-20230715104812637](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715104812637.png)
 
 # 生命周期
 
@@ -2180,7 +2180,7 @@ new Vue({
 
 
 
-![image-20230715110506727](../AppData/Roaming/Typora/typora-user-images/image-20230715110506727.png)
+![image-20230715110506727](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715110506727.png)
 
 ## 总结生命周期
 
@@ -2369,7 +2369,7 @@ new Vue({
     </script>
 ~~~
 
-![image-20230715113527003](../AppData/Roaming/Typora/typora-user-images/image-20230715113527003.png)
+![image-20230715113527003](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715113527003.png)
 
 ### 组件注意事项
 
@@ -2436,7 +2436,7 @@ new Vue({
     </script>
 ~~~
 
-![image-20230715114402031](../AppData/Roaming/Typora/typora-user-images/image-20230715114402031.png)
+![image-20230715114402031](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715114402031.png)
 
 ### 组件的嵌套
 
@@ -2510,7 +2510,7 @@ new Vue({
     </script>
 ~~~
 
-![image-20230715115035148](assets/image-20230715115035148.png)
+![image-20230715115035148](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715115035148.png)
 
 
 
@@ -2587,11 +2587,11 @@ new Vue({
 
 
 
-![image-20230715120026623](assets/image-20230715120026623.png)
+![image-20230715120026623](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715131450455.png)
 
 ### 一个重要的内置关系
 
-![image.png](assets/1643034116880-0c7ffd4b-f0ed-47b2-9638-3bb71344c4f1.png)
+![image.png](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715133845693.png)
 
 1. 一个重要的内置关系:VueComponent.prototype.__ proto __===Vue.prototyoe
 2. 为什么要有这个关系,让组件实例对象vc可以访问到Vue原型上的属性和方法
@@ -2878,7 +2878,7 @@ new Vue({
 </html>
 ~~~
 
-![image-20230715131450455](assets/image-20230715131450455.png)
+![image-20230715131450455](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715140320954.png)
 
 ### render函数
 
@@ -2970,7 +2970,7 @@ modules.export={
 </script>
 ~~~
 
-![image-20230715133845693](assets/image-20230715133845693.png)
+![image-20230715133845693](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715141609820.png)
 
 ## props配置项
 
@@ -3056,7 +3056,7 @@ props:{
 </script>
 ~~~
 
-![image-20230715140320954](assets/image-20230715140320954.png)
+![image-20230715140320954](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715144306509.png)
 
 ## mixin  混入
 
@@ -3105,7 +3105,7 @@ new Vue({
 })
 ~~~
 
-![image-20230715141609820](assets/image-20230715141609820.png)
+![image-20230715141609820](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715150232148.png)
 
 2. 同名生命周期钩子将合并为一个数组，==因此都将被调用==。另外，混入对象的钩子将在组件自身钩子之前调用
 
@@ -3240,7 +3240,7 @@ new Vue({
 })
 ~~~
 
-![image-20230715144306509](assets/image-20230715144306509.png)
+![image-20230715144306509](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715160422136.png)
 
 ## plugin插件
 
@@ -3348,7 +3348,7 @@ new Vue(){
 </script>
 ~~~
 
-![image-20230715150232148](assets/image-20230715150232148.png)
+![image-20230715150232148](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//1643034116880-0c7ffd4b-f0ed-47b2-9638-3bb71344c4f1.png)
 
 ## scoped样式
 
@@ -3720,7 +3720,7 @@ new Vue(){
 </style>
 ~~~
 
-![image-20230715160422136](assets/image-20230715160422136.png)
+![image-20230715160422136](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715173803819.png)
 
 # Vue CLI 本地存储 自定义事件
 
@@ -4321,7 +4321,7 @@ new Vue({
 <style scoped>.student{background-color: pink;padding: 5px;margin-top: 30px;}</style>
 ~~~
 
-![image-20230715173803819](assets/image-20230715173803819.png)
+![image-20230715173803819](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//image-20230715120026623.png)
 
 ### 使用自定义事件优化Todo-List
 
