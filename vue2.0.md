@@ -8036,7 +8036,17 @@ this.$router.replace({
 具体使用
 
 1. ==<font color='red'>activated</font>==路由组件被激活时触发
-2. ==<font color='red'>deactivated</font>==路由组件失活时触发
+2. ==<font color='red'>deactivated</font>==路由组件失活时触发s
+
+> <font size="9px">注意：</font>
+>
+> <font size="5px" color='red'>activated和deactivated是配合keep-alive一起使用的</font>
+>
+> <font size="5px" color='red'>activated和deactivated没有keep-alive的时候是不会被触发的</font>
+> <font size="5px" color='red'>在存在keep-alive的时候可以将activated当作created进行使用</font>
+> <font size="5px" color='red'>deactivated是组件销毁的时候触发，此时的destory是不执行的</font>
+
+
 
 ![路由钩子activated和deactivated](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//路由钩子activated和deactivated.gif)
 
@@ -8109,6 +8119,405 @@ this.$router.replace({
      }else{
        document.title = 'vue-test'
      }
+   })
+   ~~~
+
+
+2. 独享守卫
+
+~~~js
+beforeEnter(to,from,next){
+  console.log('beforeEnter',to,froms)
+  if(localStorage.getItem('school')==='atguigu'){
+    next()
+  }else{
+    alert('暂无权限查看')
+  }
+}
+~~~
+
+3. 组件内守卫
+
+~~~vue
+ // 进入守卫：通过路由规则，进入该组件时被调用
+beforeRouteEnter(to,from,next){...next()}
+
+// 离开守卫：通过路由规则，离开该组件时被调用
+beforeRouteLeave(to,from,next{...next()})
+~~~
+
+### 全局路由守卫
+
+> 保护所有的妹妹，不管美丑，
+>
+> 有从头保护一下的router.beforeEach((to,from,next)=>{})
+>
+> 有妹妹挨打后保护一下的router.afterEach((to,from,next)){}
+
+`src/router/index.js`
+
+~~~js
+// 该文件专门用于创建整个应用的路由器
+import VueRouter from 'vue-router'
+// 引入组件
+import Home from '../pages/Home'
+import About from '../pages/About'
+import News from '../pages/News'
+import Message from '../pages/Message'
+import Detail from '../pages/Detail'
+
+// 创建一个路由器
+const router = new VueRouter({
+  routes:[
+    {
+      name:'guanyv',
+      path:'/about',
+      component:About,
+      meta:{title:'关于'}
+    },
+    {
+    	name:'zhuye',
+      path:'/home',
+      component:Home,
+      meta:{title:'主页'},
+      children:[
+        {
+          name:'xinwen',
+        path:'news',
+        component:News,
+        meta:{isAuth:true,title:'新闻'}
+        },
+        {
+          name:'xiaoxi',
+          path:'message',
+          component:Message,
+          meta:{isAuth:true,title:'消息'},
+          children:[
+            {
+              name:'xiangqing',
+              path:'detail',
+              component:Detail,
+              meta:{isAuth:true,title:"详情"},
+              props($route){
+                return {
+                  id:$route.query.id,
+                  title:$route.query.title
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+})
+
+
+// 全局前置路由守卫——初始化的时候，每次路由切换之前被调用
+route。beforeEach((to,from,next)=>{
+  console.log('前置路由守卫',to,from)
+  if(to.meta.isAuth){
+    if(localStorage.getItem('school')==='atguigu'){
+      next()
+    }else{
+      alert('学校名不对，无权限查看！')
+    }
+  }else{
+    next()
+  }
+})
+
+
+
+// 全局后置路由守卫——初始化的时候被调用，每次路由切换之后被调用
+router.afterEach((to,from)=>{
+  console.log('后置路由守卫',to,from)
+  document.title = to.meta.title || '硅谷系统'
+})
+
+
+export default router
+~~~
+
+### 独享路由守卫
+
+> 只保护特定的漂亮妹妹，因为是漂亮美眉，所以她不会挨打，因为有独享路由守卫在开始保护她一下
+
+`src/router/index.js`
+
+~~~js
+//该文件专门用于创建整个应用的路由器
+import VueRouter from "vue-router";
+//引入组件
+import Home from '../pages/Home'
+import About from '../pages/About'
+import News from '../pages/News'
+import Message from '../pages/Message'
+import Detail from '../pages/Detail'
+
+
+//创建一个路由器
+const router = new VueRouter({
+    routes:[
+        {
+            name:'guanyv',
+            path:'/about',
+            component:About,
+            meta:{title:'关于'}
+        },
+        {
+            name:'zhuye',
+            path:'/home',
+            component:Home,
+            meta:{title:'主页'},
+            children:[
+                {
+                    name:'xinwen',
+                    path:'news',
+                    component:News,
+                    meta:{title:'新闻'},
+                    // 🔴独享守卫，进入路由时触发
+                    beforeEnter(to,from,next){
+                        console.log('独享路由守卫',to,from)
+                        if(localStorage.getItem('school') === 'atguigu'){
+                            next()
+                        }else{
+                            alert('暂无权限查看')
+                        }
+                    }
+                },
+                {
+                    name:'xiaoxi',
+                    path:'message',
+                    component:Message,
+                    meta:{title:'消息'},
+                    children:[
+                        {
+                            name:'xiangqing',
+                            path:'detail',
+                            component:Detail,
+                            meta:{title:'详情'},
+                            props($route){
+                                return {
+                                    id:$route.query.id,
+                                    title:$route.query.title,
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+})
+
+//全局后置路由守卫————初始化的时候被调用、每次路由切换之后被调用
+router.afterEach((to,from)=>{
+	console.log('后置路由守卫',to,from)
+	document.title = to.meta.title || '硅谷系统'
+})
+
+//导出路由器
+export default router
+~~~
+
+### 组件内路由守卫
+
+个人理解：路由进入时守卫和离开时守卫
+
+### **beforeRouteUpdate**（网上搜到的，没讲）
+
+> 这个方法是vue-router2.2版本加上的。因为原来的版本中，如果一个在两个子路由之间跳转，是不触发beforeRouteLeave的。这会导致某些重置操作，没地方触发。在之前，我们都是用watch 的。但是通过这个勾子，我们有了更好的方式。
+
+`src/pages/About.vue`
+
+~~~vue
+<template>
+    <h2>我是About组件的内容</h2>
+</template>
+
+<script>
+    export default {
+        name:'About',
+        // 通过路由规则，进入该组件时被调用
+        beforeRouteEnter (to, from, next) {
+            console.log('About--beforeRouteEnter',to,from)
+            if(localStorage.getItem('school')==='atguigu'){
+                next()
+            }else{
+                alert('学校名不对，无权限查看！')
+            }
+        },
+        // 通过路由规则，离开该组件时被调用
+        beforeRouteLeave (to, from, next) {
+            console.log('About--beforeRouteLeave',to,from)
+            next()
+        }
+    }
+</script>
+~~~
+
+to:将目标路由信息全部告知
+
+![to](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//to.png)
+
+ from:从何而来
+
+![路由from](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//路由from.png)
+
+next:用于放行，通过next()来放行
+
+类似于后端的拦截器与过滤器，与前置路由守卫相比后置路由守卫没有next，用于切换组件展示一些组件的数据，到达后置路由意味着，前置路由的判断一定通过了
+
+## 路由器的两种工作模式
+
+1. 对于一个==url==来说，什么是==hash值==
+
+   ==#==**及其后面的内容就是**==hash值==
+
+2. ==hash值==不会包含在==HTTP==请求中，即：==hash值==不会带给服务器
+
+3. ==hash==模式
+
+   1. 地址中永远带着#号，不美观
+   2. 若以后降低至通过第三方手机app分享，若app校验严格，则地址会被标记为不合格
+   3. 兼容性较好
+
+4. ==history==模式
+
+   - 地址干净，美观
+   - 兼容性和==hash==模式相比较差
+   - 应用部署上线时需要后端人员支持，解决刷新页面服务端404的问题
+
+   ```js
+   const router = new VueRouter({
+     mode:'history',
+     routes:[...]
+   })
+     
+     
+   export default router
+   ```
+
+总结
+
+>$router.beforeEach() 全局前置路由守卫
+>
+>$router.afterEach() 全局后置路由守卫
+>
+>beforeEnter() 独享路由守卫
+>
+>beforeRouteEnter) 组件内前置路由守卫
+>
+>beforeRouterLeave() 组件内后置路由守卫
+
+# Vue UI 组件库
+
+## 常用UI组件库
+
+### 移动端常用UI组件库
+
+1. [Vant](https://vant-ui.github.io/vant/#/zh-CN)
+2. [Cube UI](https://didi.github.io/cube-ui/#/zh-CN)
+3. [Mint UI](http://mint-ui.github.io/)
+4. [Nut UI](https://nutui.jd.com/#/)
+
+PC端常用UI组件库
+
+1. [Element UI](https://element.eleme.cn/#/zh-CN)
+2. [IView UI](https://www.iviewui.com/)
+
+## element-UI基本使用
+
+1. 安装element-ui ==<font color='red'>npm i element-ui</font>==
+2. ==src/main.js==
+
+~~~js
+import Vue from 'vue'
+import App from './App.vue'
+import ElementUI from 'element-ui' // 引入elementUI组件库
+import 'ekement-ui/lib/theme-chalk/index.css'	// 引入ElementUI 全部样式
+
+Vue。config。productionTip = false
+
+Vue.use(ElementUI)
+
+new Vue({
+  el:'#app',
+  render:h=>h(App)
+})
+~~~
+
+3. ==src/App.vue==
+
+~~~~vue
+<template>
+	<div>
+		<br>
+		<el-row>
+			<el-button icon="el-icon-search" circle></el-button>
+			<el-button type="primary" icon="el-icon-edit" circle></el-button>
+			<el-button type="success" icon="el-icon-check" circle></el-button>
+			<el-button type="info" icon="el-icon-message" circle></el-button>
+			<el-button type="warning" icon="el-icon-star-off" circle></el-button>
+			<el-button type="danger" icon="el-icon-delete" circle></el-button>
+		</el-row>
+	</div>
+</template>
+
+<script>
+	export default {
+		name:'App',
+	}
+</script>
+~~~~
+
+![elementui](https://cdn.jsdelivr.net/gh/Voun8/ty_imgs//elementui.png)
+
+## element-ui按需引入
+
+1. 安装babel-plugin-component ==<font color='red'>npm i babel-plugin-component</font>
+
+2. 修改==babel-config.js==
+
+   ~~~js
+   module.exports = {
+     presets: [
+       '@vue/cli-plugin-babel/preset',
+       ["@babel/preset-env", { "modules": false }]
+     ],
+     plugins: [
+       [
+         "component",
+         {        
+           "libraryName": "element-ui",
+           "styleLibraryName": "theme-chalk"
+         }
+       ]
+     ]
+   }
+   ~~~
+
+3. ==src/main.js==
+
+   ~~~js
+   
+   import Vue from 'vue'
+   import App from './App.vue'
+   import { Button,Row } from 'element-ui'	// 按需引入
+   
+   Vue.config.productionTip = false
+   
+   Vue.component(Button.name, Button);
+   Vue.component(Row.name, Row);
+   /* 或写为
+    * Vue.use(Button)
+    * Vue.use(Row)
+    */
+   
+   new Vue({
+       el:"#app",
+       render: h => h(App),
    })
    ~~~
 
