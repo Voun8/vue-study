@@ -2388,8 +2388,8 @@ new Vue({
 
 关于组件标签
 
-- 第一种写法:<school></school>
-- 第二种写法:<school/>
+- 第一种写法:`<school></school>`
+- 第二种写法:`<school/>`
 - 备注:不使用脚手架时,<school/>会导致后续组件不能渲染
 
 一个简写方式 
